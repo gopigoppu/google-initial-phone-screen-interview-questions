@@ -131,15 +131,73 @@ Quicksort highly depends on randomly accessing the data elements and swap elemen
 
 <br>
 
+**7. When Does the Worst Case of Quicksort Occur?**
+
+![Quick Sort Worst case](./images/quick_sort_worst_case.png)
+
+Quicksort works by dividing an array into smaller arrays and then sorting those smaller arrays. A pivot element is used to partition an array into smaller arrays; smaller arrays are divided recursively until an array with only one or no elements is created. Hence, the selection of the pivot element plays an important role in the efficiency of the quicksort algorithm.
+
+But when the pivot element divides the array into two unbalanced sub-arrays (huge difference in size), the performance of quicksort decreases. Following are the cases where the pivot divides an array into two unbalanced sub-arrays: 
+
+* **When the input array is already sorted**, and we choose the leftmost element as the pivot element. In this case, we’ll have two extremely unbalanced arrays. One array will have 0 elements, and the other one will have N - 1 elements.
+* **When the given array is reverse sorted**, and we choose the rightmost element as the pivot element. Again, in this case, the pivot elements will split the input array into two unbalanced arrays of size 0 and N - 1.
+* **When all the elements in the given array are the same**. In such a scenario, the pivot element divides the array into one subarray of length N-1, and the time complexity of Quicksort increases significantly.
+
+<br>
+
+**8. Can quicksort be implemented in O(NLogN) worst-case time complexity?**
+
+Yes, we can minimize the worst-case time complexity of quicksort to O(N*logN) by finding the median of the unsorted array in O(N) and using the median as the pivot. By doing this, we make sure that the array is divided into two subarrays of almost equal size, and we never encounter the case when the array is divided into subarrays of size 0 and N-1. But the constant factor of this method is very high, and therefore, it is not used in practice.
+
+<br>
+
+**9. Despite having a worst-case time complexity of O(N^2), why is quicksort considered a fast sorting algorithm?**
+
+The worst case of quicksort O(N^2) can be easily avoided with a high probability by choosing the right pivot. Obtaining an average-case behavior by choosing the right pivot element makes the performance better and as efficient as merge sort. Quicksort, in particular, exhibits good cache locality, which makes it faster than merge sort in many cases, such as in a virtual memory environment.
+
+<br>
+
+**10. Lower bound on number of comparisons done in a typical sorting algorithm?**
+
+    Ans:  O(nlog(n)
+
+The problem of sorting can be viewed as following. 
+
+**Input**: A sequence of n numbers <a1, a2, . . . , an>. 
+
+**Output**: A permutation (reordering) <a‘1, a‘2, . . . , a‘n> of the input sequence such that a‘1 <= a‘2 ….. <= a’n. 
+
+A sorting algorithm is comparison based if it uses comparison operators to find the order between two numbers.  Comparison sorts can be viewed abstractly in terms of decision trees. A decision tree is a full binary tree that represents the comparisons between elements that are performed by a particular sorting algorithm operating on an input of a given size. The execution of the sorting algorithm corresponds to tracing a path from the root of the decision tree to a leaf. At each internal node, a comparison ai <= aj is made. The left subtree then dictates subsequent comparisons for ai <= aj, and the right subtree dictates subsequent comparisons for ai > aj. When we come to a leaf, the sorting algorithm has established the ordering. So we can say following about the decision tree. 
+
+1) Each of the n! permutations on n elements must appear as one of the leaves of the decision tree for the sorting algorithm to sort properly. 
+
+2) Let x be the maximum number of comparisons in a sorting algorithm. The maximum height of the decision tree would be x. A tree with maximum height x has at most 2^x leaves. 
+
+After combining the above two facts, we get following relation. 
+ 
+
+  
+      n!  <= 2^x
+
+    Taking Log on both sides.
+      log2(n!)  <= x
+
+    Since log2(n!)  = Θ(nLogn),  we can say
+      x = Ω(nLog2n)
+
+Therefore, any comparison based sorting algorithm must make at least nLog2n comparisons to sort the input array, and Heapsort and merge sort are asymptotically optimal comparison sorts. 
+
+<br>
+
+
 **7. What's the difference between external sorting and internal sorting?**
 
 In internal sorting all the data to sort is stored in memory at all times while sorting is in progress. In external sorting data is stored outside memory (like on disk) and only loaded into memory in small chunks. External sorting is usually applied in cases when data can't fit into memory entirely.
 
 So in internal sorting you can do something like shell sort - just access whatever array elements you want at whatever moment you want. You can't do that in external sorting - the array is not entirely in memory, so you can't just randomly access any element in memory and accessing it randomly on disk is usually extremely slow. The external sorting algorithm has to deal with loading and unloading chunks of data in optimal manner.
 
-<br>
 
-*External Sorting :*
+**External Sorting :**
 
 External sorting is required when the data being sorted do not fit into the main memory of a computing device (usually RAM) and instead, they must reside in the slower external memory (usually a hard drive). External sorting typically uses a hybrid sort-merge strategy. In the sorting phase, chunks of data small enough to fit in main memory are read, sorted, and written out to a temporary file. In the merge phase, the sorted sub-files are combined into a single larger file.
 
@@ -149,7 +207,7 @@ External sorting is required when the data being sorted do not fit into the main
 * External radix
 * External merge
 
-*Internal Sorting :*
+**Internal Sorting :**
 
 Internal sorting are type of sorting which is used when the entire collection of data is small enough that sorting can take place within main memory. There is no need for external memory for execution of sorting program. 
 It is used when size of input is small
