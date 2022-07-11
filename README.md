@@ -189,8 +189,44 @@ Therefore, any comparison based sorting algorithm must make at least nLog2n comp
 
 <br>
 
+**11. Is JavaScript a pass-by-reference or pass-by-value language?**
 
-**7. What's the difference between external sorting and internal sorting?**
+It's always pass by value, but for objects the value of the variable is a reference. Because of this, when you pass an object and change its members, those changes persist outside of the function. This makes it look like pass by reference. But if you actually change the value of the object variable you will see that the change does not persist, proving it's really pass by value.
+
+It's interesting in JavaScript. Consider this example:
+
+    function changeStuff(a, b, c)
+    {
+      a = a * 10;
+      b.item = "changed";
+      c = {item: "changed"};
+    }
+
+    var num = 10;
+    var obj1 = {item: "unchanged"};
+    var obj2 = {item: "unchanged"};
+
+    changeStuff(num, obj1, obj2);
+
+    console.log(num);
+    console.log(obj1.item);
+    console.log(obj2.item);
+
+This produces the output:
+
+    10
+    changed
+    unchanged
+
+If obj1 was not a reference at all, then changing obj1.item would have no effect on the obj1 outside of the function.
+If the argument was a proper reference, then everything would have changed. num would be 100, and obj2.item would read "changed". Instead, num stays 10 and obj2.item remains "unchanged".
+Instead, the situation is that the item passed in is passed by value. But the item that is passed by value is itself a reference. Technically, this is called call-by-sharing.
+
+In practical terms, this means that if you change the parameter itself (as with num and obj2), that won't affect the item that was fed into the parameter. But if you change the internals of the parameter, that will propagate back up (as with obj1).
+
+<br>
+
+**12. What's the difference between external sorting and internal sorting?**
 
 In internal sorting all the data to sort is stored in memory at all times while sorting is in progress. In external sorting data is stored outside memory (like on disk) and only loaded into memory in small chunks. External sorting is usually applied in cases when data can't fit into memory entirely.
 
@@ -216,3 +252,25 @@ It is used when size of input is small
 * insertion sort
 * quicksort
 * heapsort
+
+<br>
+
+**13. Hash table worst-case lookup and when does it occur?**
+
+Hash tables are O(1) average and amortized case complexity, however it suffers from O(n) worst case time complexity. [And I think this is where your confusion is]
+
+Hash tables suffer from O(n) worst time complexity due to two reasons:
+
+If too many elements were hashed into the same key: looking inside this key may take O(n) time.
+Once a hash table has passed its load balance - it has to rehash [create a new bigger table, and re-insert each element to the table].
+However, it is said to be O(1) average and amortized case because:
+
+It is very rare that many items will be hashed to the same key [if you chose a good hash function and you don't have too big load balance.
+The rehash operation, which is O(n), can at most happen after n/2 ops, which are all assumed O(1): Thus when you sum the average time per op, you get : (n*O(1) + O(n)) / n) = O(1)
+Note because of the rehashing issue - a realtime applications and applications that need low latency - should not use a hash table as their data structure.
+
+EDIT: Annother issue with hash tables: cache
+Another issue where you might see a performance loss in large hash tables is due to cache performance. Hash Tables suffer from bad cache performance, and thus for large collection - the access time might take longer, since you need to reload the relevant part of the table from the memory back into the cache.
+
+<br>
+
